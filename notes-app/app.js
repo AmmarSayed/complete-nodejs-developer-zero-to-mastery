@@ -1,3 +1,4 @@
 const validator = require("validator");
+const chalk = require("chalk");
 
-console.log(validator.isEmail("foo@bar.com")); //=> true;
+console.log(chalk.black.bold.bgBlue("Success"));
