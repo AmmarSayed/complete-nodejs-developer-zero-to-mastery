@@ -15,9 +15,17 @@
 
     {{>header}}
 
-    <p>Created by {{name}}</p>
+        <form id="searchForm" action="">
+            <input type="text" name="" id="searchBox" placeholder="enter city name"> <button>search 🔎</button>
+        </form>
+
+        <br>
+        <button id="qryBtn">Get Weather info for your city!</button>
+        <br>
+        <p id="message-1"></p>
+        <p id="message-2"></p>
     </main>
- 
+    
     {{>footer}}
 </body>
 </html>
