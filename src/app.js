@@ -85,6 +85,6 @@ app.get("*", (req, res) =>
   })
 );
 
-app.listen(PORT, () => {
+app.listen(proccess.env.PORT || PORT, () => {
   console.log(`🚀 Server is runing on port 🚀  ${PORT}`);
 });
