@@ -1,7 +1,3 @@
-const getGeocode = require("./utils/geocode");
-const getWeatherForcast = require("./utils/getWeatherForcast");
-const geolocationURL = "https://ipapi.co/json";
-
 const path = require("path");
 const express = require("express");
 const PORT = 3000;
@@ -12,6 +8,7 @@ const hbs = require("hbs");
 const publicDirectory = path.join(__dirname, "../public");
 const viewsPath = path.join(__dirname, "../templates/views");
 const partialsPath = path.join(__dirname, "../templates/partials");
+const getWeatherForcast = require("./src/utils/getWeatherForcast.js");
 
 // Setup handlebars ebgube abd vuews location
 app.set("view engine", "hbs");
@@ -85,6 +82,6 @@ app.get("*", (req, res) =>
   })
 );
 
-app.listen(proccess.env.PORT || PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log(`🚀 Server is runing on port 🚀  ${PORT}`);
 });
