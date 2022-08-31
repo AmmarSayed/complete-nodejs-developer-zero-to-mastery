@@ -5,9 +5,9 @@ const app = express();
 const hbs = require("hbs");
 
 // Define paths for Express config
-const publicDirectory = path.join(__dirname, "../public");
-const viewsPath = path.join(__dirname, "../templates/views");
-const partialsPath = path.join(__dirname, "../templates/partials");
+const publicDirectory = path.join(__dirname, "./public");
+const viewsPath = path.join(__dirname, "./templates/views");
+const partialsPath = path.join(__dirname, "./templates/partials");
 const getWeatherForcast = require("./src/utils/getWeatherForcast.js");
 
 // Setup handlebars ebgube abd vuews location
