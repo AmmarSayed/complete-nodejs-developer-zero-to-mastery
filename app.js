@@ -1,6 +1,6 @@
 const path = require("path");
 const express = require("express");
-const PORT = 3000;
+const port = 3000;
 const app = express();
 const hbs = require("hbs");
 const cors = require("cors");
@@ -84,6 +84,6 @@ app.get("*", (req, res) =>
   })
 );
 
-app.listen(process.env.PORT || PORT, () => {
-  console.log(`🚀 Server is runing on port 🚀  ${PORT}`);
+app.listen(process.env.PORT || port, () => {
+  console.log(`🚀 Server is runing on port 🚀  ${port}`);
 });
