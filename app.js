@@ -3,6 +3,7 @@ const express = require("express");
 const PORT = 3000;
 const app = express();
 const hbs = require("hbs");
+const cors = require("cors");
 
 // Define paths for Express config
 const publicDirectory = path.join(__dirname, "./public");
@@ -17,6 +18,7 @@ hbs.registerPartials(partialsPath);
 
 // Setup static directory to serve
 app.use(express.static(publicDirectory));
+app.use(cors());
 
 // Render the view template
 app.get("", (req, res) => {
