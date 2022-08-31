@@ -1,17 +1,12 @@
-const names = ["Ammar", "ahmed", "yamen"];
-
-const shortNames = names.filter((name) => {
-  return name.length <= 4;
-});
-
-const geocode = (address, clgbk) => {
+const doWorkCallback = (callback) => {
   setTimeout(() => {
-    const data = { lat: 0, long: 0 };
-
-    clgbk(data);
+    // callback("This is my Error!!" , undefined)
+    callback(undefined, [1, 2, 3]);
   }, 2000);
 };
 
-const data = geocode("Egypt", (data) => {
-  console.log(data);
+doWorkCallback((error, result) => {
+  if (error) return console.log(error);
+
+  console.log(result);
 });
