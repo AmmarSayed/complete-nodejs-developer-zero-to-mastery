@@ -26,9 +26,7 @@ qryBtn.addEventListener("click", () => {
     const { latitude, longitude } = pos.coords;
 
     try {
-      const data = await getData(
-        `http://localhost:3000/weather?lat=${latitude}&long=${longitude}`
-      );
+      const data = await getData(`/weather?lat=${latitude}&long=${longitude}`);
       messagage1.textContent = data.allData.name;
       messagage2.textContent = `The Weather Today: ${data.weather}`;
     } catch (error) {
@@ -46,7 +44,7 @@ searchForm.addEventListener("submit", (e) => {
 
   (async () => {
     try {
-      const data = await getData(`http://localhost:3000/weather?q=${text}`);
+      const data = await getData(`/weather?q=${text}`);
       messagage1.textContent = data.allData.name;
       messagage2.textContent = `The Weather Today: ${data.weather}`;
     } catch (error) {
