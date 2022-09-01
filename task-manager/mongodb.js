@@ -1,9 +1,7 @@
 // CRUD Operations
-
+require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-
-const uri =
-  "mongodb+srv://ammar:A123456e@cluster0.3foql77.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGO_URI;
 const databaseName = "task-manager";
 const collectionName = "users";
 
