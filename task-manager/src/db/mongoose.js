@@ -14,7 +14,7 @@ mongoose
     useUnifiedTopology: true,
     serverApi: ServerApiVersion.v1,
   })
-  .then(() => console.log("Connected successfully"))
+  .then(() => console.log("Connected to Database successfully"))
   .catch((err) => console.log(err));
 
 module.exports = mongoose;
