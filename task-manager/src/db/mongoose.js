@@ -5,7 +5,9 @@ const mongoose = require("mongoose");
 
 const databaseName = "task-manager";
 
-const uri = process.env.MONGO_URI;
+const uri =
+  process.env.MONGO_URI ||
+  "mongodb+srv://ammar:A123456e@cluster0.3foql77.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose
   .connect(uri, {
