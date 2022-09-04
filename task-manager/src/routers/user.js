@@ -2,6 +2,35 @@ const express = require("express");
 const User = require("../models/user");
 const router = new express.Router();
 
+// create a new user
+router.post("/users", async (req, res) => {
+  try {
+    const user = await new User(req.body).save();
+    // generate JWT
+    const token = await user.generateAuthToken();
+
+    res.status(201).send({ user, token });
+  } catch (error) {
+    res.status(500).send({ message: "Wrong Entery", error });
+  }
+});
+
+router.post("/users/login", async (req, res) => {
+  try {
+    const user = await User.findByCredentials(
+      req.body.email,
+      req.body.password
+    );
+
+    // generate JWT
+    const token = await user.generateAuthToken();
+
+    await res.send({ user, token });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 router.get("/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -22,15 +51,6 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
-router.post("/users", async (req, res) => {
-  try {
-    const user = await new User(req.body).save();
-    res.status(201).send({ message: "Success", user });
-  } catch (error) {
-    res.status(500).send({ message: "Wrong Entery", error });
-  }
-});
-
 router.patch("/users/:id", async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email", "password", "age"];
@@ -42,15 +62,22 @@ router.patch("/users/:id", async (req, res) => {
   if (!isValidOperation)
     return res.status(400).send({ Error: "invalid updates" });
   try {
-    const latestUserData = await User.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    /////////
+    // findByIdAndUpdate will not trigger the middleware which we need for password hashing
+    /////////
+    // const latestUserData = await User.findByIdAndUpdate(
+    //   req.params.id,
+    //   req.body,
+    //   { new: true, runValidators: true }
+    // );
 
-    if (!latestUserData) res.status(404).send();
+    const user = await User.findById(req.params.id);
 
-    res.send(latestUserData);
+    if (!user) res.status(404).send();
+    updates.forEach((update) => (user[update] = req.body[update]));
+    await user.save();
+
+    res.send(user);
   } catch (error) {
     //handling validation errors
     res.status(400).send(error);

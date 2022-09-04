@@ -38,27 +38,38 @@ router.post("/tasks", async (req, res) => {
 });
 
 router.patch("/tasks/:id", async (req, res) => {
+  // get the required updated fields from the body
   const updates = Object.keys(req.body);
   const allowedUpdates = ["description", "completed"];
+
   const isValidOperation = updates.every((item) =>
     allowedUpdates.includes(item)
   );
+
   if (!isValidOperation)
     return res.status(400).send({ Error: "invalid updates" });
 
   try {
-    const latestTaskData = await Task.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
+    // const latestTaskData = await Task.findByIdAndUpdate(
+    //   req.params.id,
+    //   req.body,
+    //   { new: true, runValidators: true }
+    // );
+
+    const task = await Task.findById(req.params.id);
+
+    if (!task) return res.status(404).send();
+
+    updates.forEach(
+      (updateField) => (task[updateField] = req.body[updateField])
     );
 
-    if (!latestTaskData) return res.status(404).send();
+    await task.save();
 
-    res.send(latestTaskData);
+    res.send(task);
   } catch (err) {
     // handle server realted issue
-    res.statusCode(500).send(err);
+    res.status(500).send(err);
   }
 });
 
