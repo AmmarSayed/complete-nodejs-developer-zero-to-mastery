@@ -30,7 +30,7 @@ router.get("/tasks", auth, async (req, res) => {
   }
 
   try {
-    const tasks = await Task.find()
+    const tasks = await Task.find({ owner: req.user._id })
       .limit(limit)
       .skip((page - 1) * limit)
       .sort({ [field]: method === "asc" ? 1 : -1 });
@@ -81,9 +81,7 @@ router.patch("/tasks/:id", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["description", "completed"];
 
-  const isValidOperation = updates.every((item) =>
-    allowedUpdates.includes(item)
-  );
+  const isValidOperation = updates.every((item) => allowedUpdates.includes(item));
 
   if (!isValidOperation) {
     return res.status(400).send({ Error: "invalid updates" });
@@ -92,9 +90,7 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     const task = await Task.findOne({ _id, owner: req.user._id });
     if (!task) return res.status(404).send();
 
-    updates.forEach(
-      (updateField) => (task[updateField] = req.body[updateField])
-    );
+    updates.forEach((updateField) => (task[updateField] = req.body[updateField]));
 
     await task.save();
 

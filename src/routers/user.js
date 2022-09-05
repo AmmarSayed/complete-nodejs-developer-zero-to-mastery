@@ -87,8 +87,6 @@ router.get("/users/:id", async (req, res) => {
     res.status(500).send({ message: "Error", err });
   }
 });
-
-
 */
 
 // update user
