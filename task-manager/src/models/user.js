@@ -1,3 +1,4 @@
+require("dotenv").config();
 const validator = require("validator");
 const mongoose = require("../db/mongoose");
 const bcrypt = require("bcrypt");
@@ -84,7 +85,7 @@ userSchema.methods.toJSON = function () {
 // Create JWT Token
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = jwt.sign({ _id: user._id.toString() }, "thisIsNewUser");
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
 
   user.tokens = user.tokens.concat({ token });
   await user.save();

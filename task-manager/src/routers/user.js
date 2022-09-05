@@ -5,10 +5,13 @@ const auth = require("../middleware/auth");
 const multer = require("multer");
 const sharp = require("sharp");
 
+const { sendWelcomeEmail, sendGoodbyEmail } = require("../emails/account");
+
 // create a new user
 router.post("/users", async (req, res) => {
   try {
     const user = await new User(req.body).save();
+    sendWelcomeEmail(user.email, user.name);
     // generate JWT
     const token = await user.generateAuthToken();
 
@@ -112,6 +115,7 @@ router.patch("/users/me", auth, async (req, res) => {
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
+    sendGoodbyEmail(req.user.email, req.user.name);
     res.send(req.user);
   } catch (error) {
     res.status(500).send(error);

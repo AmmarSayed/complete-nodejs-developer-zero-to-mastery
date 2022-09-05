@@ -7,7 +7,7 @@ const taskRouter = require("./routers/tasks");
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 /////////////////////////////// With middleware: new request --> do somthing --> run router handler
 
