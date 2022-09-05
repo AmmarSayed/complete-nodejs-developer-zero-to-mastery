@@ -2,6 +2,7 @@ const validator = require("validator");
 const mongoose = require("../db/mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Task = require("./task");
 
 ////////////////////
 const userSchema = new mongoose.Schema({
@@ -42,6 +43,13 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+// Linking the tasks collection with the users collection
+userSchema.virtual("tasks", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "owner",
+});
+
 // define our own method on the userSchema to allow finding user by email and password
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
@@ -53,6 +61,18 @@ userSchema.statics.findByCredentials = async (email, password) => {
   if (!isMatch) throw new Error("Unable to login!");
 
   return user;
+};
+
+// toJSON runs everytime we call JSON.stringify, which happens to be called
+// automaticall every time express sends back some data
+userSchema.methods.toJSON = function () {
+  const user = this;
+  const userData = user.toObject();
+
+  delete userData.tokens;
+  delete userData.password;
+
+  return userData;
 };
 
 // Create JWT Token
@@ -75,6 +95,14 @@ userSchema.pre("save", async function (next) {
 
   next();
 });
+
+// Delete user tasks when user is removed
+userSchema.pre("remove", async function (next) {
+  const user = this;
+  await Task.deleteMany({ owner: user._id });
+  next();
+});
+
 // define User model
 const User = mongoose.model("User", userSchema);
 

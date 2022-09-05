@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/user");
 const router = new express.Router();
+const auth = require("../middleware/auth");
 
 // create a new user
 router.post("/users", async (req, res) => {
@@ -31,14 +32,50 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-router.get("/users", async (req, res) => {
+// router.get("/users", auth, async (req, res) => {
+//   try {
+//     const users = await User.find();
+//     res.send(users);
+//   } catch (error) {
+//     res.status(500).send({ message: "Service is currently down", error });
+//   }
+// });
+
+// check if the user is authenticated first, then send the user profile
+router.get("/users/me", auth, async (req, res) => {
+  res.send(req.user);
+});
+
+// Logout
+router.post("/users/logout", auth, async (req, res) => {
   try {
-    const users = await User.find();
-    res.send(users);
+    req.user.tokens = req.user.tokens.filter(
+      ({ token }) => token !== req.usedToken
+    );
+
+    await req.user.save();
+
+    res.send();
   } catch (error) {
-    res.status(500).send({ message: "Service is currently down", error });
+    console.log(error);
+    res.status(500).send();
   }
 });
+
+// Logout All
+router.post("/users/logoutAll", auth, async (req, res) => {
+  try {
+    req.user.tokens = [];
+    await req.user.save();
+
+    res.send();
+  } catch (error) {
+    console.log(error);
+    res.status(500).send();
+  }
+});
+
+/*
 
 router.get("/users/:id", async (req, res) => {
   const _id = req.params.id;
@@ -51,7 +88,11 @@ router.get("/users/:id", async (req, res) => {
   }
 });
 
-router.patch("/users/:id", async (req, res) => {
+
+*/
+
+// update user
+router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email", "password", "age"];
 
@@ -61,35 +102,23 @@ router.patch("/users/:id", async (req, res) => {
 
   if (!isValidOperation)
     return res.status(400).send({ Error: "invalid updates" });
+
   try {
-    /////////
-    // findByIdAndUpdate will not trigger the middleware which we need for password hashing
-    /////////
-    // const latestUserData = await User.findByIdAndUpdate(
-    //   req.params.id,
-    //   req.body,
-    //   { new: true, runValidators: true }
-    // );
+    updates.forEach((update) => (req.user[update] = req.body[update]));
+    await req.user.save();
 
-    const user = await User.findById(req.params.id);
-
-    if (!user) res.status(404).send();
-    updates.forEach((update) => (user[update] = req.body[update]));
-    await user.save();
-
-    res.send(user);
+    res.send(req.user);
   } catch (error) {
     //handling validation errors
     res.status(400).send(error);
   }
 });
 
-router.delete("/users/:id", async (req, res) => {
+// delete user
+router.delete("/users/me", auth, async (req, res) => {
   try {
-    const id = req.params.id;
-    const deletedUser = await User.findByIdAndDelete(id);
-    if (!deletedUser) return res.status(404).send();
-    res.send(deletedUser);
+    await req.user.remove();
+    res.send(req.user);
   } catch (error) {
     res.status(500).send(error);
   }
