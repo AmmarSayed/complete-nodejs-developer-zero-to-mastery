@@ -5,43 +5,46 @@ const jwt = require("jsonwebtoken");
 const Task = require("./task");
 
 ////////////////////
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true, trim: true },
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true },
 
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    validate(val) {
-      if (!validator.isEmail(val)) throw new Error("Invalid Email");
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      validate(val) {
+        if (!validator.isEmail(val)) throw new Error("Invalid Email");
+      },
+      lowercase: true,
     },
-    lowercase: true,
-  },
 
-  password: {
-    type: String,
-    minlength: 7,
-    validate(val) {
-      if (val.toLowerCase().includes("password"))
-        throw new Error(`Invalid password, cannot contain "password"`);
+    password: {
+      type: String,
+      minlength: 7,
+      validate(val) {
+        if (val.toLowerCase().includes("password"))
+          throw new Error(`Invalid password, cannot contain "password"`);
+      },
+      trim: true,
+      required: true,
     },
-    trim: true,
-    required: true,
-  },
 
-  age: {
-    type: Number,
-    validate(val) {
-      if (val < 0) throw new Error("Age must be a positive number!");
+    age: {
+      type: Number,
+      validate(val) {
+        if (val < 0) throw new Error("Age must be a positive number!");
+      },
+      default: 0,
     },
-    default: 0,
+    tokens: [
+      {
+        token: { type: String, required: true },
+      },
+    ],
   },
-  tokens: [
-    {
-      token: { type: String, required: true },
-    },
-  ],
-});
+  { timestamps: true }
+);
 
 // Linking the tasks collection with the users collection
 userSchema.virtual("tasks", {

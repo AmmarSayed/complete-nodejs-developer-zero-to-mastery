@@ -1,6 +1,5 @@
 const express = require("express");
 const Task = require("../models/task");
-const User = require("../models/user");
 const auth = require("../middleware/auth");
 const router = new express.Router();
 
@@ -15,12 +14,45 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 
+// GET /tasks?completed=false
+// GET /tasks?limit=10&skip=10
+// GET /tasks?sortBy=createdAt:desc
 // get all tasks for a specific user
 router.get("/tasks", auth, async (req, res) => {
+  const completed = req.query.completed;
+  const { limit = 5, page = 1, sortBy = "createdAt:asc" } = req.query;
+  const [field, method = 1] = sortBy.split(":");
+
+  let match = {};
+
+  if (req.query.completed) {
+    match.completed = completed === "true";
+  }
+
   try {
-    // const tasks = await Task.find({ owner: req.user._id });
-    await req.user.populate("tasks");
-    res.send(req.user.tasks);
+    const tasks = await Task.find()
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({ [field]: method === "asc" ? 1 : -1 });
+
+    /////////////////////
+    // await req.user.populate({
+    //   path: "tasks",
+    //   match,
+    //   options: { skip: (page - 1) * limit, limit },
+    // });
+
+    /////////////////////
+
+    // const tasks = await Task.find({ owner: req.user._id , completed:false});
+    // if (completed === "true" || completed == "false") {
+    //   await req.user.populate({ path: "tasks", match });
+    //   return res.send(req.user.tasks);
+    // }
+    // await req.user.populate("tasks");
+    /////////////////////
+
+    return res.send(tasks);
   } catch (error) {
     res.status(500).send();
   }
