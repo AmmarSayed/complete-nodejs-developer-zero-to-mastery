@@ -23,8 +23,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: 7,
       validate(val) {
-        if (val.toLowerCase().includes("password"))
-          throw new Error(`Invalid password, cannot contain "password"`);
+        if (val.toLowerCase().includes("password")) throw new Error(`Invalid password, cannot contain "password"`);
       },
       trim: true,
       required: true,
@@ -42,6 +41,9 @@ const userSchema = new mongoose.Schema(
         token: { type: String, required: true },
       },
     ],
+    avatar: {
+      type: Buffer,
+    },
   },
   { timestamps: true }
 );
@@ -74,6 +76,7 @@ userSchema.methods.toJSON = function () {
 
   delete userData.tokens;
   delete userData.password;
+  delete userData.avatar;
 
   return userData;
 };
