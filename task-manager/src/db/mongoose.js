@@ -3,15 +3,10 @@ const { ServerApiVersion } = require("mongodb");
 
 const mongoose = require("mongoose");
 
-const databaseName = "task-manager";
-
-const uri =
-  process.env.MONGO_URI ||
-  "mongodb+srv://ammar:A123456e@cluster0.3foql77.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.MONGO_URI;
 
 mongoose
   .connect(uri, {
-    dbName: databaseName,
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverApi: ServerApiVersion.v1,

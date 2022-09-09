@@ -3,7 +3,7 @@ const sgMail = require("@sendgrid/mail");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const sendWelcomeEmail = (email, name) => {
+const sendWelcomeEmail = async (email, name) => {
   const msg = {
     to: email, // Change to your recipient
     from: "ammarsayed1988@gmail.com", // Change to your verified sender
@@ -22,7 +22,7 @@ const sendWelcomeEmail = (email, name) => {
     });
 };
 
-const sendGoodbyEmail = (email, name) => {
+const sendGoodbyEmail = async (email, name) => {
   const msg = {
     to: email, // Change to your recipient
     from: "ammarsayed1988@gmail.com", // Change to your verified sender
@@ -31,7 +31,7 @@ const sendGoodbyEmail = (email, name) => {
     html: `<strong>Dear ${name}, we're sorry to see leaving our App. We hope seeing you subscribing again soon. Please let us know what could have done to keep you onboard!</strong>`,
   };
 
-  sgMail
+  await sgMail
     .send(msg)
     .then(() => {
       console.log("Email sent");
