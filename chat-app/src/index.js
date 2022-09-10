@@ -13,16 +13,20 @@ const port = process.env.PORT;
 
 app.use(express.static(publicDirectory));
 
-let count = 0;
-
 io.on("connection", (socket) => {
   console.log("a user connected");
-  socket.emit("countUpdated", count);
+  socket.emit("message", "💻 Welcome to Chat App! 💻");
+  // send messgae to all exept who joust joined
+  socket.broadcast.emit("message", "A new user joined the chat ...");
+  socket.on("reply", (reply) => {
+    io.emit("message", reply);
+  });
+  socket.on("disconnect", () => {
+    io.emit("message", "A user has left!");
+  });
 
-  socket.on("increment", () => {
-    count++;
-    // socket.emit("countUpdated", count);
-    io.emit("countUpdated", count);
+  socket.on("sendGeoLocation", (location) => {
+    io.emit("sendGeoLocation", location);
   });
 });
 
