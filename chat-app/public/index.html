@@ -5,19 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat App</title>
+    <link rel="stylesheet" href="/css/styles.min.css" />
+    <link rel="shortcut icon" href="/img/favicon.png" type="image/x-icon" />
   </head>
+
   <body>
-    <h1>Chat Application</h1>
-    <form id="messageForm">
-      <input type="text" name="messageBox" id="messageBox" />
-      <button>Send 🗞</button>
-    </form>
+    <div class="centered-form">
+      <div class="centered-form__box">
+        <h1>Join</h1>
+        <form action="/chat.html">
+          <label for="username">Display name</label>
+          <input type="text" name="username" placeholder="Display name" required />
 
-    <button id="send-location">Send location 📍</button>
+          <label for="username">Room</label>
+          <input type="text" name="room" placeholder="Room" required />
 
-    <div id="root"></div>
-
-    <script src="/socket.io/socket.io.js" defer></script>
-    <script src="/js/chat.js" defer></script>
+          <button>Join</button>
+        </form>
+      </div>
+    </div>
   </body>
 </html>
